@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ancre imprimable</title>
+  <style>
+    body { margin: 0; font-family: system-ui, sans-serif; background: #ece7d8; color: #172c39; }
+    main { max-width: 760px; margin: auto; padding: 24px; text-align: center; }
+    img { display: block; width: 100mm; height: 100mm; max-width: 100%; margin: 20px auto; box-shadow: 0 10px 40px #0003; }
+    button, a { display: inline-block; margin: 8px; padding: 11px 16px; border-radius: 999px; border: 0; background: #163f59; color: white; text-decoration: none; font: inherit; }
+    @media print {
+      body { background: white; }
+      h1, p, .actions { display: none; }
+      main { padding: 0; }
+      img { width: 100mm; height: 100mm; box-shadow: none; margin: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>Ancre AR — 10 × 10 cm</h1>
+    <p>Imprime à l’échelle 100 %, sans « ajuster à la page ». Le QR ouvre l’expérience ; la serrure carrée sert au suivi AR.</p>
+    <img src="/anchor.svg" alt="Coffre pirate portugais avec QR code et marqueur AR" />
+    <div class="actions">
+      <button onclick="window.print()">Imprimer</button>
+      <a href="/anchor.svg" download="coffre-portugais-ar.svg">Télécharger le SVG</a>
+      <a href="/">Ouvrir l’expérience</a>
+    </div>
+  </main>
+</body>
+</html>

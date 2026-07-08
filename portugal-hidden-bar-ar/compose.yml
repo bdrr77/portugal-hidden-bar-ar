@@ -1,0 +1,18 @@
+services:
+  hidden-bar-ar:
+    image: ghcr.io/YOUR_GITHUB_USER/YOUR_REPOSITORY:latest
+    container_name: hidden-bar-ar
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      PUBLIC_URL: "https://bar.example.com"
+      BAR_NAME: "O Cofre Escondido"
+      DRINKS: >-
+        [
+          {"name":"Porto Tónico","detail":"Porto branco, tónica, limão"},
+          {"name":"Ginjinha","detail":"Licor de ginja"},
+          {"name":"Poncha da Madeira","detail":"Aguardente, mel, citrinos"},
+          {"name":"Navegador","detail":"Rum escuro, ananás, canela"},
+          {"name":"Maré Alta","detail":"Sans alcool — lima, hortelã, soda"}
+        ]

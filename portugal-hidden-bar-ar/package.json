@@ -1,0 +1,19 @@
+{
+  "name": "portugal-hidden-bar-ar",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Dockerized WebAR hidden bar menu with a printable Portugal pirate chest QR anchor.",
+  "license": "MIT",
+  "type": "module",
+  "scripts": {
+    "start": "node server.mjs",
+    "check": "node --check server.mjs"
+  },
+  "dependencies": {
+    "express": "5.1.0",
+    "qrcode": "1.5.4"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}
