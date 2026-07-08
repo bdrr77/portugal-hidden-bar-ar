@@ -1,32 +1,204 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Ancre imprimable</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ancre AR imprimable</title>
+
+  <script src="/config.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+
   <style>
-    body { margin: 0; font-family: system-ui, sans-serif; background: #ece7d8; color: #172c39; }
-    main { max-width: 760px; margin: auto; padding: 24px; text-align: center; }
-    img { display: block; width: 100mm; height: 100mm; max-width: 100%; margin: 20px auto; box-shadow: 0 10px 40px #0003; }
-    button, a { display: inline-block; margin: 8px; padding: 11px 16px; border-radius: 999px; border: 0; background: #163f59; color: white; text-decoration: none; font: inherit; }
+    body {
+      margin: 0;
+      font-family: system-ui, sans-serif;
+      color: #17384d;
+      background: #ece7d8;
+    }
+
+    main {
+      max-width: 800px;
+      margin: auto;
+      padding: 24px;
+      text-align: center;
+    }
+
+    .anchor {
+      position: relative;
+      width: 100mm;
+      height: 100mm;
+      max-width: 100%;
+      margin: 20px auto;
+      overflow: hidden;
+      border: 4px solid #17384d;
+      background:
+        repeating-linear-gradient(
+          45deg,
+          #f4f0df 0 20px,
+          #2467a2 20px 24px,
+          #f4f0df 24px 44px
+        );
+      box-shadow: 0 10px 40px #0003;
+    }
+
+    .title {
+      position: absolute;
+      top: 12px;
+      left: 0;
+      right: 0;
+      font-family: Georgia, serif;
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .chest {
+      position: absolute;
+      left: 12%;
+      right: 12%;
+      bottom: 12%;
+      height: 55%;
+      border: 10px solid #3a1c0d;
+      border-radius: 45% 45% 10px 10px;
+      background: linear-gradient(135deg, #6c351b, #a55e2f, #48210f);
+    }
+
+    .chest::before,
+    .chest::after {
+      content: "";
+      position: absolute;
+      left: 0;
+      right: 0;
+      height: 14px;
+      background: #c89a34;
+    }
+
+    .chest::before {
+      top: 38%;
+    }
+
+    .chest::after {
+      bottom: 12%;
+    }
+
+    .marker {
+      position: absolute;
+      left: 50%;
+      top: 55%;
+      width: 78px;
+      height: 78px;
+      transform: translate(-50%, -50%);
+      background: black;
+      border: 10px solid #c89a34;
+    }
+
+    .marker-inner {
+      position: absolute;
+      inset: 12px;
+      background: white;
+    }
+
+    .hiro {
+      position: absolute;
+      inset: 12px;
+      font-family: Arial, sans-serif;
+      font-size: 38px;
+      line-height: 54px;
+      font-weight: 900;
+      color: black;
+    }
+
+    #qr {
+      position: absolute;
+      top: 65px;
+      right: 18px;
+      width: 92px;
+      height: 92px;
+      padding: 6px;
+      background: white;
+      border: 4px solid #17384d;
+    }
+
+    .instruction {
+      position: absolute;
+      left: 0;
+      right: 0;
+      bottom: 8px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    button {
+      padding: 12px 18px;
+      border: 0;
+      border-radius: 999px;
+      color: white;
+      background: #17384d;
+      font: inherit;
+    }
+
     @media print {
-      body { background: white; }
-      h1, p, .actions { display: none; }
-      main { padding: 0; }
-      img { width: 100mm; height: 100mm; box-shadow: none; margin: 0; }
+      body {
+        background: white;
+      }
+
+      h1,
+      p,
+      button {
+        display: none;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      .anchor {
+        width: 100mm;
+        height: 100mm;
+        margin: 0;
+        box-shadow: none;
+      }
     }
   </style>
 </head>
+
 <body>
   <main>
     <h1>Ancre AR — 10 × 10 cm</h1>
-    <p>Imprime à l’échelle 100 %, sans « ajuster à la page ». Le QR ouvre l’expérience ; la serrure carrée sert au suivi AR.</p>
-    <img src="/anchor.svg" alt="Coffre pirate portugais avec QR code et marqueur AR" />
-    <div class="actions">
-      <button onclick="window.print()">Imprimer</button>
-      <a href="/anchor.svg" download="coffre-portugais-ar.svg">Télécharger le SVG</a>
-      <a href="/">Ouvrir l’expérience</a>
+    <p>Imprime à 100 %, sans ajustement automatique.</p>
+
+    <div class="anchor">
+      <div id="title" class="title">O Cofre Escondido</div>
+
+      <div class="chest">
+        <div class="marker">
+          <div class="marker-inner">
+            <div class="hiro">H</div>
+          </div>
+        </div>
+      </div>
+
+      <canvas id="qr"></canvas>
+
+      <div class="instruction">
+        Scanne le QR puis vise la serrure.
+      </div>
     </div>
+
+    <button onclick="window.print()">Imprimer</button>
   </main>
+
+  <script>
+    const config = window.APP_CONFIG || {};
+    const target = `${config.publicUrl || location.origin}/`;
+
+    document.querySelector("#title").textContent =
+      config.barName || "O Cofre Escondido";
+
+    QRCode.toCanvas(document.querySelector("#qr"), target, {
+      width: 92,
+      margin: 1,
+      errorCorrectionLevel: "H"
+    });
+  </script>
 </body>
 </html>
