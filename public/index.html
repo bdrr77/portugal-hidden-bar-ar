@@ -16,12 +16,36 @@
       <div class="crest">☠</div>
       <h1 id="bar-name">O Cofre Escondido</h1>
       <p>Autorise la caméra, puis vise tout le coffre noir et blanc.</p>
-      <button id="start">Entrer dans le bar caché</button>
+      <button id="start" type="button">Entrer dans le bar caché</button>
       <a href="/anchor.html" class="secondary">Afficher / imprimer l’ancre</a>
     </div>
   </div>
 
   <div id="hint" class="hint hidden">Vise tout le coffre noir et blanc.</div>
+
+  <!--
+    Screen-space choice panel. It is deliberately outside the A-Frame scene,
+    so it remains stable and can be tapped directly without aiming a cursor.
+  -->
+  <section id="choice-overlay" class="choice-overlay hidden" aria-labelledby="choice-title">
+    <div class="choice-dialog">
+      <p class="choice-kicker">Le coffre est ouvert</p>
+      <h2 id="choice-title">Blue pill or red pill?</h2>
+      <p class="choice-copy">Choisis ton chemin.</p>
+
+      <div class="pill-actions">
+        <button id="blue-pill" class="pill-button pill-button--blue" type="button">
+          <span class="pill-name">BLUE PILL</span>
+          <span class="pill-destination">Boissons officielles</span>
+        </button>
+
+        <button id="red-pill" class="pill-button pill-button--red" type="button">
+          <span class="pill-name">RED PILL</span>
+          <span class="pill-destination">Menu underground</span>
+        </button>
+      </div>
+    </div>
+  </section>
 
   <a-scene
     id="scene"
@@ -41,109 +65,7 @@
       smooth-threshold="5"
     ></a-marker>
 
-    <a-entity id="content-anchor" visible="false">
-      <a-entity
-        id="choice-card"
-        position="0 0.95 0"
-        rotation="-90 0 0"
-        scale="0.01 0.01 0.01"
-        visible="false"
-      >
-        <a-plane
-          width="3.2"
-          height="2.05"
-          color="#101820"
-          material="side: double; roughness: 0.9; opacity: 0.96"
-          shadow
-        ></a-plane>
-
-        <a-text
-          value="BLUE PILL OR RED PILL?"
-          color="#ffffff"
-          align="center"
-          width="3.05"
-          position="0 .62 .035"
-        ></a-text>
-
-        <a-text
-          value="Choose your path"
-          color="#d7c38a"
-          align="center"
-          width="2.35"
-          position="0 .28 .04"
-        ></a-text>
-
-        <a-entity position="-.78 -.34 .075">
-          <a-circle
-            radius=".36"
-            scale="1.7 .72 1"
-            color="#1976d2"
-            material="roughness: .45; metalness: .08"
-          ></a-circle>
-          <a-text
-            value="BLUE"
-            color="#ffffff"
-            align="center"
-            width="1.25"
-            position="0 -.02 .035"
-          ></a-text>
-          <a-plane
-            id="blue-pill"
-            class="clickable"
-            width="1.45"
-            height=".7"
-            material="opacity: 0.001; transparent: true; depthWrite: false"
-            position="0 0 .07"
-          ></a-plane>
-          <a-text
-            value="OFFICIAL DRINKS"
-            color="#b7d8ff"
-            align="center"
-            width="1.42"
-            position="0 -.56 .035"
-          ></a-text>
-        </a-entity>
-
-        <a-entity position=".78 -.34 .075">
-          <a-circle
-            radius=".36"
-            scale="1.7 .72 1"
-            color="#c62828"
-            material="roughness: .45; metalness: .08"
-          ></a-circle>
-          <a-text
-            value="RED"
-            color="#ffffff"
-            align="center"
-            width="1.25"
-            position="0 -.02 .035"
-          ></a-text>
-          <a-plane
-            id="red-pill"
-            class="clickable"
-            width="1.45"
-            height=".7"
-            material="opacity: 0.001; transparent: true; depthWrite: false"
-            position="0 0 .07"
-          ></a-plane>
-          <a-text
-            value="UNDERGROUND MENU"
-            color="#ffb7b7"
-            align="center"
-            width="1.42"
-            position="0 -.56 .035"
-          ></a-text>
-        </a-entity>
-      </a-entity>
-    </a-entity>
-
-    <a-entity camera>
-      <a-cursor
-        raycaster="objects: .clickable"
-        fuse="false"
-        cursor="rayOrigin: mouse"
-      ></a-cursor>
-    </a-entity>
+    <a-entity camera></a-entity>
   </a-scene>
 
   <script type="module" src="/app.js"></script>

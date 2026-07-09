@@ -4,8 +4,7 @@ const intro = document.querySelector("#intro");
 const startButton = document.querySelector("#start");
 const hint = document.querySelector("#hint");
 const marker = document.querySelector("#marker");
-const contentAnchor = document.querySelector("#content-anchor");
-const choiceCard = document.querySelector("#choice-card");
+const choiceOverlay = document.querySelector("#choice-overlay");
 const bluePill = document.querySelector("#blue-pill");
 const redPill = document.querySelector("#red-pill");
 const barName = document.querySelector("#bar-name");
@@ -65,68 +64,30 @@ async function startCamera() {
 
 startButton.addEventListener("click", startCamera);
 
-let markerTracked = false;
-let cardShown = false;
-let lastMarkerSeenAt = 0;
+let choiceUnlocked = false;
 
-const TRACKING_GRACE_MS = 2000;
-
-function copyMarkerPose() {
-  if (!marker?.object3D || !contentAnchor?.object3D) {
-    requestAnimationFrame(copyMarkerPose);
+function revealChoice() {
+  if (choiceUnlocked) {
     return;
   }
 
-  const now = performance.now();
+  choiceUnlocked = true;
+  hint.classList.add("hidden");
+  choiceOverlay.classList.remove("hidden");
 
-  if (marker.object3D.visible) {
-    markerTracked = true;
-    lastMarkerSeenAt = now;
-
-    contentAnchor.object3D.position.copy(marker.object3D.position);
-    contentAnchor.object3D.quaternion.copy(marker.object3D.quaternion);
-    contentAnchor.object3D.scale.copy(marker.object3D.scale);
-    contentAnchor.object3D.visible = true;
-  } else if (
-    markerTracked &&
-    now - lastMarkerSeenAt > TRACKING_GRACE_MS
-  ) {
-    markerTracked = false;
-    contentAnchor.object3D.visible = false;
-    hint.textContent = "Vise de nouveau tout le coffre noir et blanc.";
-  }
-
-  requestAnimationFrame(copyMarkerPose);
+  // Focus the first real screen button for accessibility without requiring
+  // the camera or AR cursor to move.
+  window.setTimeout(() => bluePill.focus({ preventScroll: true }), 250);
 }
 
-requestAnimationFrame(copyMarkerPose);
-
-marker.addEventListener("markerFound", () => {
-  markerTracked = true;
-  lastMarkerSeenAt = performance.now();
-  contentAnchor.object3D.visible = true;
-
-  hint.textContent = "Blue pill or red pill?";
-  choiceCard.setAttribute("visible", "true");
-
-  if (!cardShown) {
-    cardShown = true;
-    choiceCard.removeAttribute("animation__appear");
-    choiceCard.setAttribute("scale", "0.01 0.01 0.01");
-
-    requestAnimationFrame(() => {
-      choiceCard.setAttribute(
-        "animation__appear",
-        "property: scale; from: 0.01 0.01 0.01; to: 1.35 1.35 1.35; dur: 850; easing: easeOutElastic"
-      );
-    });
-  } else {
-    choiceCard.setAttribute("scale", "1.35 1.35 1.35");
-  }
-});
+marker.addEventListener("markerFound", revealChoice);
 
 marker.addEventListener("markerLost", () => {
-  // The last pose remains visible for TRACKING_GRACE_MS.
+  // Once the chest has been recognized, the screen-space choice remains open.
+  // Tracking loss cannot rotate or hide the menu.
+  if (!choiceUnlocked) {
+    hint.textContent = "Vise de nouveau tout le coffre noir et blanc.";
+  }
 });
 
 function goTo(path) {
@@ -134,11 +95,13 @@ function goTo(path) {
 }
 
 bluePill.addEventListener("click", () => {
-  hint.textContent = "Ouverture de la carte officielle…";
+  bluePill.disabled = true;
+  redPill.disabled = true;
   goTo("/official-drinks.html");
 });
 
 redPill.addEventListener("click", () => {
-  hint.textContent = "Ouverture du menu underground…";
+  bluePill.disabled = true;
+  redPill.disabled = true;
   goTo("/underground-menu.html");
 });
