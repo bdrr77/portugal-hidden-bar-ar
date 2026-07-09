@@ -15,9 +15,19 @@ const SCAN_TIMEOUT_MS = 45_000;
 
 barName.textContent = config.barName || "La Matrissse";
 
+
+// After a scan timeout, the page reloads so AR.js and the camera are fully
+// reset. Restore the landing screen while keeping the normal launch button.
+if (window.sessionStorage.getItem("scan-timeout") === "1") {
+  window.sessionStorage.removeItem("scan-timeout");
+  introCopy.textContent =
+    "La recherche a expiré après 45 secondes. Tu peux réessayer.";
+  startButton.disabled = false;
+  startButton.textContent = "Entrer dans le bar caché";
+}
+
 let choiceUnlocked = false;
 let scanTimeoutId = null;
-let sessionExpired = false;
 
 async function getCameraVideo(timeoutMs = 10000) {
   const startedAt = Date.now();
@@ -66,18 +76,12 @@ function returnToLandingPage() {
     return;
   }
 
-  sessionExpired = true;
+  // AR.js does not reliably restart a camera session after its scene has
+  // been paused and its media tracks have been stopped. Reloading gives the
+  // landing page a completely fresh, clickable launch button and camera state.
+  window.sessionStorage.setItem("scan-timeout", "1");
   stopAR();
-
-  hint.classList.add("hidden");
-  choiceOverlay.classList.add("hidden");
-  intro.classList.remove("hidden");
-
-  introCopy.textContent =
-    "La recherche a expiré après 45 secondes. Appuie pour recommencer.";
-
-  startButton.disabled = false;
-  startButton.textContent = "Recommencer";
+  window.location.reload();
 }
 
 function beginScanTimeout() {
@@ -86,11 +90,6 @@ function beginScanTimeout() {
 }
 
 async function startCamera() {
-  if (sessionExpired) {
-    window.location.reload();
-    return;
-  }
-
   startButton.disabled = true;
   startButton.textContent = "Ouverture de la caméra…";
 
