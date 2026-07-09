@@ -1,36 +1,11 @@
 # Portugal Hidden Bar AR
 
-A Dockerized WebAR proof of concept for a hidden Portugal-themed bar.
+A Dockerized WebAR experience for a hidden Portugal-themed bar.
 
-The printable 10 × 10 cm image contains:
+The printable black-and-white chest is a custom AR.js pattern marker. When the phone recognizes it, a large **Blue pill or Red pill?** choice appears:
 
-- a pirate chest and Portuguese `azulejo` styling;
-- a QR code generated from `PUBLIC_URL`;
-- a custom high-contrast AR.js pattern marker shaped like a padlock;
-- an AR parchment menu that opens when the user touches the wax seal.
-
-## Push it to GitHub
-
-Create an empty GitHub repository, then from this folder:
-
-```bash
-git init
-git add .
-git commit -m "Initial WebAR hidden bar POC"
-git branch -M main
-git remote add origin git@github.com:YOUR_GITHUB_USER/YOUR_REPOSITORY.git
-git push -u origin main
-```
-
-The workflow publishes:
-
-```text
-ghcr.io/YOUR_GITHUB_USER/YOUR_REPOSITORY:latest
-```
-
-It also publishes SHA and semantic-version tags.
-
-For public anonymous pulls, set the generated package visibility to **Public** in GitHub package settings.
+- **Red pill:** opens the dedicated underground bar menu.
+- **Blue pill:** opens the public official-drinks page.
 
 ## Run locally
 
@@ -42,12 +17,12 @@ Open:
 
 - AR experience: `http://localhost:8080`
 - printable anchor: `http://localhost:8080/anchor.html`
+- underground menu: `http://localhost:8080/underground-menu.html`
+- official drinks: `http://localhost:8080/official-drinks.html`
 
-Camera access normally requires **HTTPS**. `localhost` is accepted by modern browsers for development, but production must be served behind an HTTPS reverse proxy.
+Camera access normally requires HTTPS. `localhost` is accepted for development, but production must be served behind HTTPS.
 
-## Production Compose
-
-Edit `compose.yml`:
+## Configuration
 
 ```yaml
 services:
@@ -56,39 +31,34 @@ services:
     environment:
       PUBLIC_URL: "https://bar.example.com"
       BAR_NAME: "O Cofre Escondido"
+      DRINKS: >-
+        [
+          {"name":"Navegador","detail":"Rum escuro, ananás, canela"},
+          {"name":"Maré Alta","detail":"Lima, hortelã, soda"}
+        ]
+      OFFICIAL_DRINKS: >-
+        [
+          {"name":"Super Bock","detail":"Portuguese lager"},
+          {"name":"Vinho Verde","detail":"Fresh Portuguese white wine"}
+        ]
 ```
 
-`PUBLIC_URL` is the address encoded in the QR code. After changing it, reload `/anchor.html` and print a new anchor.
+`DRINKS` controls the red-pill underground menu. `OFFICIAL_DRINKS` controls the blue-pill public menu. Both variables accept either JSON arrays or pipe-separated drink names.
 
-## Configure drinks
+## Tracking files
 
-`DRINKS` accepts JSON:
+- Printable marker: `public/chest-marker-v2.png`
+- AR.js pattern: `public/pattern-chest-v2.patt`
+- Printable page: `public/anchor.html`
 
-```yaml
-DRINKS: >-
-  [
-    {"name":"Porto Tónico","detail":"Porto branco, tónica, limão"},
-    {"name":"Ginjinha","detail":"Licor de ginja"}
-  ]
-```
-
-It also accepts a simple pipe-separated list:
-
-```yaml
-DRINKS: "Porto Tónico|Ginjinha|Poncha"
-```
-
-## Important tracking detail
-
-The QR code launches the page. The chest lock is a custom high-contrast AR.js pattern marker. The app loads it from `public/pattern-lock.patt`, and the printable image is `public/lock-marker.png`.
-
-This is intentional: a QR code changes when `PUBLIC_URL` changes and is not an ideal AR.js pattern target. Keeping the custom lock marker fixed makes the experience much more reliable while preserving one single 10 × 10 cm printed picture.
+Keep the complete white margin and black border visible. Print at 100% scale, avoid glare, and keep the marker reasonably flat.
 
 ## Test checklist
 
 1. Deploy behind HTTPS.
-2. Open `/anchor.html` on a desktop and print at 100% scale.
-3. Scan the QR with a phone.
+2. Open `/anchor.html` and print at 100% scale.
+3. Scan the QR code with a phone.
 4. Grant camera access.
-5. Point the camera at the complete black-and-white lock marker inside the gold chest lock.
-6. Touch the red seal on the floating parchment.
+5. Point the camera at the complete black-and-white chest marker.
+6. Touch the large blue or red pill.
+7. Confirm each pill opens its corresponding menu page.

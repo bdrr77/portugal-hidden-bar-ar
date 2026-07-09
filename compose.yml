@@ -16,3 +16,13 @@ services:
           {"name":"Navegador","detail":"Rum escuro, ananás, canela"},
           {"name":"Maré Alta","detail":"Sans alcool — lima, hortelã, soda"}
         ]
+
+      OFFICIAL_DRINKS: >-
+        [
+          {"name":"Super Bock","detail":"Portuguese lager"},
+          {"name":"Sagres","detail":"Portuguese lager"},
+          {"name":"Vinho Verde","detail":"Fresh Portuguese white wine"},
+          {"name":"Douro Tinto","detail":"Red wine from the Douro Valley"},
+          {"name":"Porto","detail":"Portuguese fortified wine"},
+          {"name":"Água com Gás","detail":"Sparkling mineral water"}
+        ]

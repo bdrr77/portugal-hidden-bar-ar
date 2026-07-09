@@ -14,15 +14,24 @@ const defaultMenu = [
   { name: "Navegador", detail: "Rum escuro, ananás e canela" },
   { name: "Maré Alta", detail: "Sem álcool — lima, hortelã e água com gás" }
 ];
+const defaultOfficialDrinks = [
+  { name: "Super Bock", detail: "Portuguese lager" },
+  { name: "Sagres", detail: "Portuguese lager" },
+  { name: "Vinho Verde", detail: "Fresh Portuguese white wine" },
+  { name: "Douro Tinto", detail: "Red wine from the Douro Valley" },
+  { name: "Porto", detail: "Portuguese fortified wine" },
+  { name: "Água com Gás", detail: "Sparkling mineral water" }
+];
 
-function parseMenu(raw) {
-  if (!raw) return defaultMenu;
+
+function parseMenu(raw, fallback) {
+  if (!raw) return fallback;
 
   try {
     const value = JSON.parse(raw);
 
     if (!Array.isArray(value) || value.length === 0) {
-      return defaultMenu;
+      return fallback;
     }
 
     return value.map((item) =>
@@ -42,7 +51,11 @@ function parseMenu(raw) {
   }
 }
 
-const menu = parseMenu(process.env.DRINKS);
+const menu = parseMenu(process.env.DRINKS, defaultMenu);
+const officialDrinks = parseMenu(
+  process.env.OFFICIAL_DRINKS,
+  defaultOfficialDrinks
+);
 
 const mimeTypes = {
   ".html": "text/html; charset=utf-8",
@@ -121,7 +134,8 @@ createServer(async (req, res) => {
       `window.APP_CONFIG=${JSON.stringify({
         publicUrl,
         barName,
-        menu
+        menu,
+        officialDrinks
       })};`
     );
     return;
