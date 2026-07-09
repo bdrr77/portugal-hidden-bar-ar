@@ -90,7 +90,7 @@ let lastMarkerSeenAt = 0;
 
 // Keep the last valid marker pose briefly when tracking flickers.
 // This prevents the letter from flashing off while the lock is still visible.
-const TRACKING_GRACE_MS = 2000;
+const TRACKING_GRACE_MS = 1000;
 
 function copyMarkerPose() {
   if (!marker?.object3D || !contentAnchor?.object3D) {
