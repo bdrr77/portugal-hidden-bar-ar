@@ -13,7 +13,7 @@ const barName = document.querySelector("#bar-name");
 
 const SCAN_TIMEOUT_MS = 45_000;
 
-barName.textContent = config.barName || "O Cofre Escondido";
+barName.textContent = config.barName || "La Matrissse";
 
 let choiceUnlocked = false;
 let scanTimeoutId = null;
@@ -110,7 +110,7 @@ async function startCamera() {
 
     intro.classList.add("hidden");
     hint.classList.remove("hidden");
-    hint.textContent = "Vise tout le coffre noir et blanc.";
+    hint.textContent = "Vise tout le symbole noir et blanc.";
 
     beginScanTimeout();
   } catch (error) {
@@ -149,7 +149,7 @@ marker.addEventListener("markerFound", revealChoice);
 
 marker.addEventListener("markerLost", () => {
   if (!choiceUnlocked) {
-    hint.textContent = "Vise de nouveau tout le coffre noir et blanc.";
+    hint.textContent = "Vise de nouveau tout le symbole noir et blanc.";
   }
 });
 
