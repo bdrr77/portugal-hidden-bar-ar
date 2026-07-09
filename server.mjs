@@ -85,7 +85,12 @@ async function serveStatic(pathname, res) {
     }
 
     const data = await readFile(filePath);
-    const contentType = mimeTypes[extname(filePath).toLowerCase()] || "application/octet-stream";
+    const extension = extname(filePath).toLowerCase();
+    const contentType = mimeTypes[extension] || "application/octet-stream";
+
+    if ([".patt", ".html", ".js"].includes(extension)) {
+      res.setHeader("Cache-Control", "no-store");
+    }
 
     send(res, 200, contentType, data);
   } catch {
