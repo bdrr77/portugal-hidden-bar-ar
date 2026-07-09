@@ -4,6 +4,7 @@ const intro = document.querySelector("#intro");
 const startButton = document.querySelector("#start");
 const hint = document.querySelector("#hint");
 const marker = document.querySelector("#marker");
+const contentAnchor = document.querySelector("#content-anchor");
 const scroll = document.querySelector("#scroll");
 const seal = document.querySelector("#seal");
 const menuLines = document.querySelector("#menu-lines");
@@ -83,9 +84,52 @@ async function startCamera() {
 startButton.addEventListener("click", startCamera);
 
 let unlocked = false;
+let markerTracked = false;
+let letterShown = false;
+let lastMarkerSeenAt = 0;
+
+// Keep the last valid marker pose briefly when tracking flickers.
+// This prevents the letter from flashing off while the lock is still visible.
+const TRACKING_GRACE_MS = 1400;
+
+function copyMarkerPose() {
+  if (!marker?.object3D || !contentAnchor?.object3D) {
+    return;
+  }
+
+  const now = performance.now();
+
+  if (marker.object3D.visible) {
+    markerTracked = true;
+    lastMarkerSeenAt = now;
+
+    contentAnchor.object3D.position.copy(marker.object3D.position);
+    contentAnchor.object3D.quaternion.copy(marker.object3D.quaternion);
+    contentAnchor.object3D.scale.copy(marker.object3D.scale);
+    contentAnchor.object3D.visible = true;
+  } else if (
+    markerTracked &&
+    now - lastMarkerSeenAt > TRACKING_GRACE_MS
+  ) {
+    markerTracked = false;
+    contentAnchor.object3D.visible = false;
+
+    hint.textContent = unlocked
+      ? "Reviens vers la serrure pour revoir le menu."
+      : "Vise de nouveau la serrure dorée.";
+  }
+
+  requestAnimationFrame(copyMarkerPose);
+}
+
+requestAnimationFrame(copyMarkerPose);
 
 marker.addEventListener("markerFound", () => {
   console.log("Main marker detected");
+
+  markerTracked = true;
+  lastMarkerSeenAt = performance.now();
+  contentAnchor.object3D.visible = true;
 
   hint.textContent = unlocked
     ? "Le menu caché est ouvert."
@@ -93,7 +137,10 @@ marker.addEventListener("markerFound", () => {
 
   scroll.setAttribute("visible", "true");
 
-  if (!unlocked) {
+  // Only play the entrance animation once. Repeated markerFound events
+  // caused by tracking jitter should not reset the letter to near-zero size.
+  if (!letterShown) {
+    letterShown = true;
     scroll.removeAttribute("animation__appear");
     scroll.setAttribute("scale", "0.01 0.01 0.01");
 
@@ -103,26 +150,19 @@ marker.addEventListener("markerFound", () => {
         "property: scale; from: 0.01 0.01 0.01; to: 1.35 1.35 1.35; dur: 900; easing: easeOutElastic"
       );
     });
-  } else {
+  } else if (unlocked) {
     scroll.removeAttribute("animation__appear");
     scroll.setAttribute("scale", "1.5 1.5 1.5");
+  } else {
+    scroll.setAttribute("scale", "1.35 1.35 1.35");
   }
 });
 
 marker.addEventListener("markerLost", () => {
-  console.log("Main marker lost");
+  console.log("Main marker temporarily lost");
 
-  if (unlocked) {
-    hint.textContent =
-      "Reviens vers la serrure pour revoir le menu.";
-    return;
-  }
-
-  hint.textContent = "Vise de nouveau la serrure dorée.";
-
-  scroll.removeAttribute("animation__appear");
-  scroll.setAttribute("visible", "false");
-  scroll.setAttribute("scale", "0.01 0.01 0.01");
+  // Do not hide immediately. copyMarkerPose() keeps the last pose during
+  // TRACKING_GRACE_MS and only hides after a sustained loss.
 });
 
 seal.addEventListener("click", () => {
