@@ -32,8 +32,8 @@ video,
   inset: 0 !important;
   z-index: 0 !important;
 
-  width: 100vw !important;
-  height: 100vh !important;
+  width: 100% !important;
+  height: 100% !important;
 
   object-fit: cover !important;
   background: #000;
@@ -47,20 +47,16 @@ a-scene {
   inset: 0 !important;
   z-index: 1 !important;
 
-  width: 100vw !important;
-  height: 100vh !important;
-
+  display: block !important;
   background: transparent !important;
 }
 
+/*
+ * Do not force the canvas dimensions.
+ * A-Frame/AR.js must control its aspect ratio.
+ */
 .a-canvas {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 1 !important;
-
-  width: 100vw !important;
-  height: 100vh !important;
-
+  display: block !important;
   background: transparent !important;
 }
 
