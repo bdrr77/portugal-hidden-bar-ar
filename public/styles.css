@@ -17,49 +17,6 @@ body {
   background: transparent !important;
 }
 
-body {
-  position: fixed;
-  inset: 0;
-}
-
-/*
- * AR.js creates the camera video dynamically.
- * It must remain visible behind the transparent A-Frame canvas.
- */
-video,
-#arjs-video {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 0 !important;
-
-  width: 100% !important;
-  height: 100% !important;
-
-  object-fit: cover !important;
-  background: #000;
-}
-
-/*
- * Keep the WebGL canvas above the camera stream.
- */
-a-scene {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 1 !important;
-
-  display: block !important;
-  background: transparent !important;
-}
-
-/*
- * Do not force the canvas dimensions.
- * A-Frame/AR.js must control its aspect ratio.
- */
-.a-canvas {
-  display: block !important;
-  background: transparent !important;
-}
-
 .panel {
   position: fixed;
   inset: 0;
@@ -157,17 +114,6 @@ button {
 
 .hidden {
   display: none !important;
-}
-
-#arjs-video {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-}
-
-.a-canvas {
-  opacity: 1 !important;
 }
 
 #start:disabled {
