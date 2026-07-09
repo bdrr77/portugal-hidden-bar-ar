@@ -100,12 +100,12 @@ marker.addEventListener("markerFound", () => {
     requestAnimationFrame(() => {
       scroll.setAttribute(
         "animation__appear",
-        "property: scale; from: 0.01 0.01 0.01; to: 0.78 0.78 0.78; dur: 900; easing: easeOutElastic"
+        "property: scale; from: 0.01 0.01 0.01; to: 1.35 1.35 1.35; dur: 900; easing: easeOutElastic"
       );
     });
   } else {
     scroll.removeAttribute("animation__appear");
-    scroll.setAttribute("scale", "1 1 1");
+    scroll.setAttribute("scale", "1.5 1.5 1.5");
   }
 });
 
@@ -147,7 +147,7 @@ seal.addEventListener("click", () => {
 
   scroll.setAttribute(
     "animation__open",
-    "property: scale; to: 1 1 1; dur: 650; easing: easeInOutCubic"
+    "property: scale; to: 1.5 1.5 1.5; dur: 650; easing: easeInOutCubic"
   );
 
   seal.setAttribute("color", "#b8860b");
