@@ -56,8 +56,7 @@ p {
   line-height: 1.5;
 }
 
-.card button,
-.secondary {
+.card button {
   display: block;
   width: 100%;
   margin-top: 14px;
@@ -74,10 +73,6 @@ p {
   background: #e1bd67;
 }
 
-.secondary {
-  border: 1px solid #e1bd67;
-  color: #e1bd67;
-}
 
 .hint {
   position: fixed;
@@ -200,8 +195,7 @@ p {
   opacity: 0.7;
 }
 
-.pill-name,
-.pill-destination {
+.pill-name {
   position: relative;
   z-index: 1;
   display: block;
@@ -214,10 +208,6 @@ p {
   letter-spacing: 0.08em;
 }
 
-.pill-destination {
-  margin-top: 5px;
-  font-size: clamp(15px, 4vw, 19px);
-}
 
 .hidden {
   display: none !important;
