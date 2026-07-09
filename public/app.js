@@ -130,3 +130,41 @@ seal.addEventListener("click", () => {
     ? "La carte des boissons est révélée."
     : "Touche le sceau pour ouvrir.";
 });
+
+window.addEventListener("load", () => {
+  setTimeout(() => {
+    const video = document.querySelector("#arjs-video, video");
+    const scene = document.querySelector("a-scene");
+
+    const diagnostics = {
+      aframeLoaded: typeof AFRAME !== "undefined",
+      sceneLoaded: scene?.hasLoaded ?? false,
+      videoFound: Boolean(video),
+      videoPaused: video?.paused,
+      videoReadyState: video?.readyState,
+      videoWidth: video?.videoWidth,
+      videoHeight: video?.videoHeight,
+      hasStream: Boolean(video?.srcObject),
+      protocol: location.protocol
+    };
+
+    console.log("AR diagnostics", diagnostics);
+
+    const box = document.createElement("pre");
+    box.style.cssText = `
+      position:fixed;
+      top:8px;
+      left:8px;
+      right:8px;
+      z-index:99999;
+      padding:10px;
+      margin:0;
+      background:rgba(0,0,0,.8);
+      color:white;
+      font:12px monospace;
+      white-space:pre-wrap;
+    `;
+    box.textContent = JSON.stringify(diagnostics, null, 2);
+    document.body.appendChild(box);
+  }, 4000);
+});
