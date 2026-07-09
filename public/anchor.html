@@ -1,26 +1,49 @@
 <!doctype html>
 <html lang="fr">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta charset="utf-8" />
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1"
+  />
+
   <title>Ancre AR imprimable</title>
 
   <script src="/config.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.4/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <style>
-    body {
-      margin: 0;
+    :root {
       font-family: system-ui, sans-serif;
       color: #17384d;
       background: #ece7d8;
     }
 
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      background: #ece7d8;
+    }
+
     main {
       max-width: 800px;
-      margin: auto;
+      margin: 0 auto;
       padding: 24px;
       text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(28px, 5vw, 42px);
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-size: 18px;
     }
 
     .anchor {
@@ -38,17 +61,19 @@
           #2467a2 20px 24px,
           #f4f0df 24px 44px
         );
-      box-shadow: 0 10px 40px #0003;
+      box-shadow: 0 10px 40px rgb(0 0 0 / 20%);
     }
 
     .title {
       position: absolute;
       top: 12px;
-      left: 0;
-      right: 0;
+      left: 15px;
+      right: 15px;
+      z-index: 3;
       font-family: Georgia, serif;
       font-size: 22px;
-      font-weight: bold;
+      font-weight: 700;
+      color: #17384d;
     }
 
     .chest {
@@ -59,7 +84,14 @@
       height: 55%;
       border: 10px solid #3a1c0d;
       border-radius: 45% 45% 10px 10px;
-      background: linear-gradient(135deg, #6c351b, #a55e2f, #48210f);
+      background:
+        linear-gradient(
+          180deg,
+          #9a4f24 0%,
+          #a95b2a 45%,
+          #7a3519 46%,
+          #7a3519 100%
+        );
     }
 
     .chest::before,
@@ -83,67 +115,92 @@
     .marker {
       position: absolute;
       left: 50%;
-      top: 55%;
-      width: 78px;
-      height: 78px;
+      top: 56%;
+      width: 88px;
+      height: 88px;
       transform: translate(-50%, -50%);
-      background: black;
       border: 10px solid #c89a34;
+      background: #000;
     }
 
     .marker-inner {
       position: absolute;
       inset: 12px;
-      background: white;
+      display: grid;
+      place-items: center;
+      background: #fff;
     }
 
     .hiro {
-      position: absolute;
-      inset: 12px;
       font-family: Arial, sans-serif;
-      font-size: 38px;
-      line-height: 54px;
+      font-size: 42px;
+      line-height: 1;
       font-weight: 900;
-      color: black;
+      color: #000;
     }
 
     #qr {
       position: absolute;
-      top: 65px;
+      top: 68px;
       right: 18px;
-      width: 92px;
-      height: 92px;
+      z-index: 4;
+      width: 108px;
+      height: 108px;
       padding: 6px;
-      background: white;
       border: 4px solid #17384d;
+      background: #fff;
+    }
+
+    #qr img,
+    #qr canvas {
+      display: block;
+      width: 88px !important;
+      height: 88px !important;
+      margin: 0;
     }
 
     .instruction {
       position: absolute;
-      left: 0;
-      right: 0;
+      left: 8px;
+      right: 8px;
       bottom: 8px;
+      z-index: 3;
       font-size: 12px;
-      font-weight: bold;
+      font-weight: 700;
+      color: #17384d;
+    }
+
+    .actions {
+      margin-top: 18px;
     }
 
     button {
-      padding: 12px 18px;
+      padding: 12px 20px;
       border: 0;
       border-radius: 999px;
       color: white;
       background: #17384d;
       font: inherit;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #245878;
     }
 
     @media print {
+      @page {
+        size: auto;
+        margin: 0;
+      }
+
       body {
         background: white;
       }
 
       h1,
       p,
-      button {
+      .actions {
         display: none;
       }
 
@@ -164,10 +221,15 @@
 <body>
   <main>
     <h1>Ancre AR — 10 × 10 cm</h1>
-    <p>Imprime à 100 %, sans ajustement automatique.</p>
+
+    <p>
+      Imprime à 100 %, sans ajustement automatique.
+    </p>
 
     <div class="anchor">
-      <div id="title" class="title">O Cofre Escondido</div>
+      <div id="title" class="title">
+        O Cofre Escondido
+      </div>
 
       <div class="chest">
         <div class="marker">
@@ -177,28 +239,57 @@
         </div>
       </div>
 
-      <canvas id="qr"></canvas>
+      <div id="qr" aria-label="QR code"></div>
 
       <div class="instruction">
         Scanne le QR puis vise la serrure.
       </div>
     </div>
 
-    <button onclick="window.print()">Imprimer</button>
+    <div class="actions">
+      <button type="button" onclick="window.print()">
+        Imprimer
+      </button>
+    </div>
   </main>
 
   <script>
     const config = window.APP_CONFIG || {};
-    const target = `${config.publicUrl || location.origin}/`;
 
-    document.querySelector("#title").textContent =
-      config.barName || "O Cofre Escondido";
+    const publicUrl =
+      config.publicUrl ||
+      window.location.origin;
 
-    QRCode.toCanvas(document.querySelector("#qr"), target, {
-      width: 92,
-      margin: 1,
-      errorCorrectionLevel: "H"
-    });
+    const targetUrl =
+      `${publicUrl.replace(/\/+$/, "")}/`;
+
+    const title =
+      document.querySelector("#title");
+
+    title.textContent =
+      config.barName ||
+      "O Cofre Escondido";
+
+    const qrContainer =
+      document.querySelector("#qr");
+
+    if (typeof QRCode === "undefined") {
+      qrContainer.textContent =
+        "QR indisponible";
+
+      console.error(
+        "QRCode library failed to load"
+      );
+    } else {
+      new QRCode(qrContainer, {
+        text: targetUrl,
+        width: 88,
+        height: 88,
+        colorDark: "#111111",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+      });
+    }
   </script>
 </body>
 </html>
