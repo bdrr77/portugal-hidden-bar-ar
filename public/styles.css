@@ -162,3 +162,19 @@ button {
 .hidden {
   display: none !important;
 }
+
+#arjs-video {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  pointer-events: none !important;
+}
+
+.a-canvas {
+  opacity: 1 !important;
+}
+
+#start:disabled {
+  cursor: wait;
+  opacity: 0.75;
+}

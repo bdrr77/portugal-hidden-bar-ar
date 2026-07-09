@@ -1,6 +1,7 @@
 const config = window.APP_CONFIG || {};
+
 const intro = document.querySelector("#intro");
-const start = document.querySelector("#start");
+const startButton = document.querySelector("#start");
 const hint = document.querySelector("#hint");
 const marker = document.querySelector("#marker");
 const scroll = document.querySelector("#scroll");
@@ -11,9 +12,11 @@ const barName = document.querySelector("#bar-name");
 barName.textContent = config.barName || "O Cofre Escondido";
 
 const drinks = Array.isArray(config.menu) ? config.menu : [];
+
 drinks.slice(0, 6).forEach((drink, index) => {
   const line = document.createElement("a-text");
   const detail = drink.detail ? ` — ${drink.detail}` : "";
+
   line.setAttribute("value", `${drink.name}${detail}`);
   line.setAttribute("color", "#34200f");
   line.setAttribute("align", "center");
@@ -21,16 +24,67 @@ drinks.slice(0, 6).forEach((drink, index) => {
   line.setAttribute("position", `0 ${0.22 - index * 0.16} 0`);
   line.setAttribute("visible", "false");
   line.classList.add("drink-line");
+
   menuLines.appendChild(line);
 });
 
-start.addEventListener("click", () => {
-  intro.classList.add("hidden");
-  hint.classList.remove("hidden");
-});
+async function getCameraVideo(timeoutMs = 10000) {
+  const startedAt = Date.now();
+
+  while (Date.now() - startedAt < timeoutMs) {
+    const video =
+      document.querySelector("#arjs-video") ||
+      document.querySelector("video");
+
+    if (video) {
+      return video;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 100));
+  }
+
+  throw new Error("AR.js camera video was not created");
+}
+
+async function startCamera() {
+  startButton.disabled = true;
+  startButton.textContent = "Ouverture de la caméra…";
+
+  try {
+    const video = await getCameraVideo();
+
+    video.setAttribute("autoplay", "");
+    video.setAttribute("muted", "");
+    video.setAttribute("playsinline", "");
+    video.setAttribute("webkit-playsinline", "");
+
+    video.autoplay = true;
+    video.muted = true;
+    video.playsInline = true;
+
+    await video.play();
+
+    intro.classList.add("hidden");
+    hint.classList.remove("hidden");
+    hint.textContent =
+      "Vise la serrure du coffre, puis touche le sceau.";
+  } catch (error) {
+    console.error("Camera startup failed:", error);
+
+    startButton.disabled = false;
+    startButton.textContent = "Réessayer";
+
+    hint.classList.remove("hidden");
+    hint.textContent =
+      "La caméra ne démarre pas. Vérifie les autorisations du navigateur.";
+  }
+}
+
+startButton.addEventListener("click", startCamera);
 
 marker.addEventListener("markerFound", () => {
   hint.textContent = "Coffre trouvé. Touche le sceau rouge.";
+
   scroll.setAttribute("animation__appear", {
     property: "scale",
     from: "0.01 0.01 0.01",
@@ -45,11 +99,13 @@ marker.addEventListener("markerLost", () => {
 });
 
 let open = false;
+
 seal.addEventListener("click", () => {
   open = !open;
 
   document.querySelectorAll(".drink-line").forEach((line, index) => {
     line.setAttribute("visible", open);
+
     if (open) {
       line.setAttribute(`animation__reveal${index}`, {
         property: "text.opacity",
@@ -69,5 +125,8 @@ seal.addEventListener("click", () => {
   });
 
   seal.setAttribute("color", open ? "#b8860b" : "#8b1d1d");
-  hint.textContent = open ? "La carte des boissons est révélée." : "Touche le sceau pour ouvrir.";
+
+  hint.textContent = open
+    ? "La carte des boissons est révélée."
+    : "Touche le sceau pour ouvrir.";
 });
