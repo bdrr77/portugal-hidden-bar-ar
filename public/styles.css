@@ -47,15 +47,20 @@ a-scene {
   inset: 0 !important;
   z-index: 1 !important;
 
-  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+
   background: transparent !important;
 }
 
-/*
- * Do not force the canvas dimensions.
- * A-Frame/AR.js must control its aspect ratio.
- */
 .a-canvas {
+  position: absolute !important;
+  inset: 0 !important;
+  z-index: 1 !important;
+
+  width: 100% !important;
+  height: 100% !important;
+
   display: block !important;
   background: transparent !important;
 }

@@ -8,6 +8,65 @@ const scroll = document.querySelector("#scroll");
 const seal = document.querySelector("#seal");
 const menuLines = document.querySelector("#menu-lines");
 const barName = document.querySelector("#bar-name");
+const scene = document.querySelector("#scene");
+
+function syncARCanvasSize() {
+  if (!scene.renderer) {
+    return;
+  }
+
+  const canvas = scene.renderer.domElement;
+
+  const width = Math.round(
+    window.visualViewport?.width || document.documentElement.clientWidth
+  );
+
+  const height = Math.round(
+    window.visualViewport?.height || document.documentElement.clientHeight
+  );
+
+  /*
+   * Keep the CSS display dimensions and WebGL drawing-buffer dimensions
+   * at the same aspect ratio. Without this, circles become ovals.
+   */
+  scene.style.width = `${width}px`;
+  scene.style.height = `${height}px`;
+
+  canvas.style.width = `${width}px`;
+  canvas.style.height = `${height}px`;
+
+  scene.renderer.setPixelRatio(window.devicePixelRatio || 1);
+  scene.renderer.setSize(width, height, false);
+
+  /*
+   * The cursor camera also needs the same viewport aspect ratio.
+   */
+  const camera = scene.camera;
+
+  if (camera) {
+    camera.aspect = width / height;
+    camera.updateProjectionMatrix();
+  }
+}
+
+scene.addEventListener("renderstart", () => {
+  syncARCanvasSize();
+
+  /*
+   * AR.js performs some delayed resizing after initialization,
+   * especially on iOS, so repeat after it has finished.
+   */
+  setTimeout(syncARCanvasSize, 100);
+  setTimeout(syncARCanvasSize, 500);
+  setTimeout(syncARCanvasSize, 1000);
+});
+
+window.addEventListener("resize", syncARCanvasSize);
+window.addEventListener("orientationchange", () => {
+  setTimeout(syncARCanvasSize, 250);
+});
+
+window.visualViewport?.addEventListener("resize", syncARCanvasSize);
 
 barName.textContent = config.barName || "O Cofre Escondido";
 
@@ -63,6 +122,8 @@ async function startCamera() {
     video.playsInline = true;
 
     await video.play();
+    syncARCanvasSize();
+    setTimeout(syncARCanvasSize, 250);
 
     intro.classList.add("hidden");
     hint.classList.remove("hidden");
