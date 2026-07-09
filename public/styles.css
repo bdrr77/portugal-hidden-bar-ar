@@ -12,6 +12,7 @@ html,
 body {
   width: 100%;
   height: 100%;
+  min-height: 100%;
   margin: 0;
   overflow: hidden;
   background: transparent !important;
@@ -23,61 +24,68 @@ body {
 }
 
 /*
- * AR.js creates the camera video dynamically.
- * It must remain visible behind the transparent A-Frame canvas.
+ * AR.js creates this video element dynamically.
+ * With videoTexture enabled it is used as the WebGL background.
  */
-video,
 #arjs-video {
   position: fixed !important;
   inset: 0 !important;
   z-index: 0 !important;
 
-  width: 100vw !important;
-  height: 100vh !important;
+  width: 100% !important;
+  height: 100% !important;
 
   object-fit: cover !important;
-  background: #000;
+
+  visibility: visible !important;
+  opacity: 1 !important;
+
+  pointer-events: none !important;
 }
 
 /*
- * Keep the WebGL canvas above the camera stream.
+ * The scene fills the screen.
  */
 a-scene {
   position: fixed !important;
   inset: 0 !important;
   z-index: 1 !important;
 
-  width: 100vw !important;
-  height: 100vh !important;
+  display: block !important;
 
   background: transparent !important;
 }
 
+/*
+ * Important:
+ * do not force width: 100vw and height: 100vh on the canvas.
+ * A-Frame manages its render-buffer dimensions.
+ */
 .a-canvas {
-  position: fixed !important;
-  inset: 0 !important;
-  z-index: 1 !important;
-
-  width: 100vw !important;
-  height: 100vh !important;
-
+  display: block !important;
   background: transparent !important;
 }
 
+/*
+ * Intro screen
+ */
 .panel {
   position: fixed;
   inset: 0;
-  z-index: 20;
+  z-index: 100;
 
   display: grid;
   place-items: center;
 
-  padding: 24px;
+  padding:
+    max(24px, env(safe-area-inset-top))
+    24px
+    max(24px, env(safe-area-inset-bottom));
 
   background:
     linear-gradient(
-      rgba(4, 16, 24, 0.82),
-      rgba(4, 16, 24, 0.94)
+      rgba(4, 16, 24, 0.84),
+      rgba(4, 16, 24, 0.96)
     ),
     repeating-linear-gradient(
       45deg,
@@ -95,8 +103,10 @@ a-scene {
   border: 2px solid #d7b35f;
   border-radius: 24px;
 
-  background: rgba(15, 43, 57, 0.96);
-  box-shadow: 0 20px 80px rgba(0, 0, 0, 0.55);
+  background: rgba(15, 43, 57, 0.97);
+
+  box-shadow:
+    0 20px 80px rgba(0, 0, 0, 0.55);
 }
 
 .crest {
@@ -116,6 +126,7 @@ button,
   display: block;
 
   width: 100%;
+
   margin-top: 14px;
   padding: 14px 18px;
 
@@ -128,53 +139,202 @@ button,
 
 button {
   border: 0;
+
   color: #102f45;
   background: #e1bd67;
+
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: wait;
+  opacity: 0.7;
 }
 
 .secondary {
   border: 1px solid #e1bd67;
+
   color: #e1bd67;
 }
 
+/*
+ * Tracking status message
+ */
 .hint {
   position: fixed;
-  z-index: 10;
+  z-index: 50;
 
   left: 50%;
   bottom: max(20px, env(safe-area-inset-bottom));
 
   width: min(92%, 520px);
+
   padding: 12px 18px;
 
   transform: translateX(-50%);
 
   text-align: center;
-  font-size: clamp(16px, 4vw, 22px);
+  font-family: system-ui, sans-serif;
+  font-size: clamp(16px, 4vw, 21px);
 
   border: 1px solid rgba(225, 189, 103, 0.75);
   border-radius: 999px;
 
-  background: rgba(4, 18, 27, 0.82);
+  color: #f6e8c2;
+  background: rgba(4, 18, 27, 0.84);
+
   backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+}
+
+/*
+ * Permanent unlocked menu
+ */
+.unlocked-panel {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+
+  display: grid;
+  place-items: center;
+
+  padding:
+    max(24px, env(safe-area-inset-top))
+    20px
+    max(88px, env(safe-area-inset-bottom));
+
+  overflow-y: auto;
+
+  background: rgba(5, 17, 24, 0.64);
+
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.unlocked-parchment {
+  position: relative;
+
+  width: min(92vw, 560px);
+  min-height: 360px;
+
+  padding: 46px 34px 82px;
+
+  overflow: hidden;
+
+  color: #34200f;
+
+  border: 4px solid #6c351b;
+  border-radius: 18px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(91, 45, 20, 0.2),
+      transparent 9%,
+      transparent 91%,
+      rgba(91, 45, 20, 0.2)
+    ),
+    linear-gradient(
+      180deg,
+      #ead49a,
+      #d9bd7b 52%,
+      #cda869
+    );
+
+  box-shadow:
+    0 24px 80px rgba(0, 0, 0, 0.58);
+}
+
+.unlocked-parchment::before,
+.unlocked-parchment::after {
+  content: "";
+
+  position: absolute;
+  left: 20px;
+  right: 20px;
+
+  height: 12px;
+
+  border-radius: 999px;
+
+  background: #6c351b;
+}
+
+.unlocked-parchment::before {
+  top: 14px;
+}
+
+.unlocked-parchment::after {
+  bottom: 14px;
+}
+
+.parchment-title {
+  margin-bottom: 26px;
+
+  text-align: center;
+  font-size: clamp(20px, 5vw, 30px);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.unlocked-menu {
+  display: grid;
+  gap: 14px;
+}
+
+.unlocked-menu-item {
+  padding-bottom: 10px;
+
+  border-bottom: 1px solid rgba(52, 32, 15, 0.25);
+
+  text-align: center;
+}
+
+.unlocked-menu-name {
+  display: block;
+
+  font-size: clamp(18px, 4vw, 23px);
+  font-weight: 700;
+}
+
+.unlocked-menu-detail {
+  display: block;
+
+  margin-top: 3px;
+
+  font-family: system-ui, sans-serif;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.unlocked-seal {
+  position: absolute;
+
+  left: 50%;
+  bottom: 26px;
+
+  display: grid;
+  place-items: center;
+
+  width: 64px;
+  height: 64px;
+
+  transform: translateX(-50%);
+
+  border-radius: 50%;
+
+  color: #f3d78c;
+  background: #8b1d1d;
+
+  font-family: system-ui, sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+
+  box-shadow:
+    inset 0 0 0 4px rgba(243, 215, 140, 0.18),
+    0 5px 12px rgba(0, 0, 0, 0.35);
 }
 
 .hidden {
   display: none !important;
-}
-
-#arjs-video {
-  display: block !important;
-  visibility: visible !important;
-  opacity: 1 !important;
-  pointer-events: none !important;
-}
-
-.a-canvas {
-  opacity: 1 !important;
-}
-
-#start:disabled {
-  cursor: wait;
-  opacity: 0.75;
 }

@@ -2,42 +2,110 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+
+  <meta
+    name="viewport"
+    content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no"
+  />
+
   <meta name="theme-color" content="#102f45" />
+
   <title>O Cofre Escondido</title>
-  <link rel="stylesheet" href="/styles.css" />
+
+  <link rel="stylesheet" href="/styles.css?v=11" />
+
   <script src="/config.js"></script>
+
   <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+
   <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/aframe/build/aframe-ar.js"></script>
 </head>
+
 <body>
   <div id="intro" class="panel">
     <div class="card">
       <div class="crest">☠</div>
-      <h1 id="bar-name">O Cofre Escondido</h1>
-      <p>Autorise la caméra, puis vise la serrure carrée du coffre.</p>
-      <button id="start">Entrer dans le bar caché</button>
-      <a href="/anchor.html" class="secondary">Afficher / imprimer l’ancre</a>
+
+      <h1 id="bar-name">
+        O Cofre Escondido
+      </h1>
+
+      <p>
+        Autorise la caméra, puis vise la serrure carrée du coffre.
+      </p>
+
+      <button id="start" type="button">
+        Entrer dans le bar caché
+      </button>
+
+      <a href="/anchor.html" class="secondary">
+        Afficher / imprimer l’ancre
+      </a>
     </div>
   </div>
 
-  <div id="hint" class="hint hidden">Vise la serrure du coffre, puis touche le sceau.</div>
+  <div id="hint" class="hint hidden">
+    Vise la serrure du coffre, puis touche le sceau.
+  </div>
+
+  <!--
+    This fixed HTML parchment remains visible after the chest is unlocked,
+    even when the Hiro marker is no longer visible.
+  -->
+  <section
+    id="unlocked-panel"
+    class="unlocked-panel hidden"
+    aria-live="polite"
+  >
+    <div class="unlocked-parchment">
+      <div class="parchment-title">
+        A CARTA DOS NAVEGADORES
+      </div>
+
+      <div id="unlocked-menu" class="unlocked-menu"></div>
+
+      <div class="unlocked-seal">
+        ABERTO
+      </div>
+    </div>
+  </section>
 
   <a-scene
     id="scene"
     embedded
     vr-mode-ui="enabled: false"
-    renderer="antialias: true; alpha: true; logarithmicDepthBuffer: true"
-    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono;"
+    renderer="
+      antialias: true;
+      alpha: true;
+      colorManagement: true;
+    "
+    arjs="
+      sourceType: webcam;
+      videoTexture: true;
+      debugUIEnabled: false;
+      detectionMode: mono;
+    "
   >
-    <a-marker id="marker" preset="hiro" emitevents="true">
-      <a-entity id="scroll" position="0 0.65 0" rotation="-90 0 0" scale="0.01 0.01 0.01" visible="false">
+    <a-marker
+      id="marker"
+      preset="hiro"
+      emitevents="true"
+    >
+      <a-entity
+        id="scroll"
+        position="0 0.05 0"
+        rotation="-90 0 0"
+        scale="0.01 0.01 0.01"
+        visible="false"
+      >
         <a-plane
           width="2.8"
           height="1.75"
           color="#d9bd7b"
-          material="side: double; roughness: 1"
-          shadow
+          material="
+            side: double;
+            roughness: 1;
+          "
         ></a-plane>
 
         <a-text
@@ -45,38 +113,43 @@
           color="#34200f"
           align="center"
           width="2.4"
-          position="0 .55 .035"
+          position="0 0.55 0.035"
         ></a-text>
 
-        <a-entity id="menu-lines" position="0 .18 .04"></a-entity>
+        <a-entity
+          id="menu-lines"
+          position="0 0.18 0.04"
+        ></a-entity>
 
         <a-circle
           id="seal"
           class="clickable"
-          radius=".18"
-          position="0 -.62 .08"
+          radius="0.18"
+          position="0 -0.62 0.08"
           color="#8b1d1d"
-          material="roughness: .7"
+          material="
+            side: double;
+            roughness: 0.7;
+          "
         ></a-circle>
+
         <a-text
           value="ABRIR"
           color="#f3d78c"
           align="center"
-          width=".8"
-          position="0 -.64 .095"
+          width="0.8"
+          position="0 -0.64 0.095"
         ></a-text>
       </a-entity>
     </a-marker>
 
-    <a-entity camera>
-      <a-cursor
-        raycaster="objects: .clickable"
-        fuse="false"
-        cursor="rayOrigin: mouse"
-      ></a-cursor>
-    </a-entity>
+    <a-entity
+      camera
+      cursor="rayOrigin: mouse"
+      raycaster="objects: .clickable"
+    ></a-entity>
   </a-scene>
 
-  <script type="module" src="/app.js"></script>
+  <script type="module" src="/app.js?v=11"></script>
 </body>
 </html>
