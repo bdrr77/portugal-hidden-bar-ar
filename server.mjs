@@ -3,7 +3,8 @@ import { readFile, stat } from "node:fs/promises";
 import { extname, join, normalize } from "node:path";
 
 const port = Number(process.env.PORT || 8080);
-const publicUrl = (process.env.PUBLIC_URL || `http://localhost:${port}`).replace(/\/+$/, "");
+const host = process.env.HOST || "0.0.0.0";
+const publicUrl = (process.env.PUBLIC_URL || `http://${host}:${port}`).replace(/\/+$/, "");
 const barName = process.env.BAR_NAME || "O Cofre Escondido";
 
 const defaultMenu = [
@@ -51,7 +52,8 @@ const mimeTypes = {
   ".png": "image/png",
   ".jpg": "image/jpeg",
   ".jpeg": "image/jpeg",
-  ".json": "application/json; charset=utf-8"
+  ".json": "application/json; charset=utf-8",
+  ".patt": "text/plain; charset=utf-8"
 };
 
 function send(res, status, contentType, body) {

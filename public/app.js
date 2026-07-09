@@ -67,7 +67,7 @@ async function startCamera() {
     intro.classList.add("hidden");
     hint.classList.remove("hidden");
     hint.textContent =
-      "Vise la serrure du coffre, puis touche le sceau.";
+      "Vise la serrure dorée du coffre, puis touche le sceau.";
   } catch (error) {
     console.error("Camera startup failed:", error);
 
@@ -88,8 +88,8 @@ marker.addEventListener("markerFound", () => {
   console.log("Main marker detected");
 
   hint.textContent = unlocked
-    ? "The hidden menu is open."
-    : "Chest found. Touch the red seal.";
+    ? "Le menu caché est ouvert."
+    : "Coffre trouvé. Touche le sceau rouge.";
 
   scroll.setAttribute("visible", "true");
 
@@ -114,11 +114,11 @@ marker.addEventListener("markerLost", () => {
 
   if (unlocked) {
     hint.textContent =
-      "Point the camera back at the marker to see the menu.";
+      "Reviens vers la serrure pour revoir le menu.";
     return;
   }
 
-  hint.textContent = "Point the camera back at the lock.";
+  hint.textContent = "Vise de nouveau la serrure dorée.";
 
   scroll.removeAttribute("animation__appear");
   scroll.setAttribute("visible", "false");
@@ -152,5 +152,5 @@ seal.addEventListener("click", () => {
 
   seal.setAttribute("color", "#b8860b");
 
-  hint.textContent = "The drinks menu is revealed.";
+  hint.textContent = "La carte des boissons est révélée.";
 });

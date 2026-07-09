@@ -6,7 +6,7 @@ The printable 10 × 10 cm image contains:
 
 - a pirate chest and Portuguese `azulejo` styling;
 - a QR code generated from `PUBLIC_URL`;
-- a high-contrast AR.js Hiro marker disguised as the chest lock;
+- a custom high-contrast AR.js pattern marker shaped like a padlock;
 - an AR parchment menu that opens when the user touches the wax seal.
 
 ## Push it to GitHub
@@ -80,9 +80,9 @@ DRINKS: "Porto Tónico|Ginjinha|Poncha"
 
 ## Important tracking detail
 
-The QR code launches the page. The chest lock is the actual high-contrast AR tracking marker.
+The QR code launches the page. The chest lock is a custom high-contrast AR.js pattern marker. The app loads it from `public/pattern-lock.patt`, and the printable image is `public/lock-marker.png`.
 
-This is intentional: a QR code changes when `PUBLIC_URL` changes and is not an ideal AR.js pattern target. Keeping the lock marker fixed makes the experience much more reliable while preserving one single 10 × 10 cm printed picture.
+This is intentional: a QR code changes when `PUBLIC_URL` changes and is not an ideal AR.js pattern target. Keeping the custom lock marker fixed makes the experience much more reliable while preserving one single 10 × 10 cm printed picture.
 
 ## Test checklist
 
@@ -90,5 +90,5 @@ This is intentional: a QR code changes when `PUBLIC_URL` changes and is not an i
 2. Open `/anchor.html` on a desktop and print at 100% scale.
 3. Scan the QR with a phone.
 4. Grant camera access.
-5. Point the camera at the square chest lock.
+5. Point the camera at the complete black-and-white lock marker inside the gold chest lock.
 6. Touch the red seal on the floating parchment.
