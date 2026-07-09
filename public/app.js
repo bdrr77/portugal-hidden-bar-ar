@@ -83,15 +83,29 @@ async function startCamera() {
 startButton.addEventListener("click", startCamera);
 
 marker.addEventListener("markerFound", () => {
+  console.log("Main marker detected");
+
   hint.textContent = "Coffre trouvé. Touche le sceau rouge.";
 
-  scroll.setAttribute("animation__appear", {
-    property: "scale",
-    from: "0.01 0.01 0.01",
-    to: "0.78 0.78 0.78",
-    dur: 900,
-    easing: "easeOutElastic"
+  scroll.setAttribute("visible", "true");
+  scroll.setAttribute("scale", "0.01 0.01 0.01");
+
+  requestAnimationFrame(() => {
+    scroll.setAttribute(
+      "animation__appear",
+      "property: scale; from: 0.01 0.01 0.01; to: 0.78 0.78 0.78; dur: 900; easing: easeOutElastic"
+    );
   });
+});
+
+marker.addEventListener("markerLost", () => {
+  console.log("Main marker lost");
+
+  hint.textContent = "Reviens sur la serrure du coffre.";
+
+  scroll.removeAttribute("animation__appear");
+  scroll.setAttribute("visible", "false");
+  scroll.setAttribute("scale", "0.01 0.01 0.01");
 });
 
 marker.addEventListener("markerLost", () => {
