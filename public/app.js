@@ -82,103 +82,75 @@ async function startCamera() {
 
 startButton.addEventListener("click", startCamera);
 
+let unlocked = false;
+
 marker.addEventListener("markerFound", () => {
   console.log("Main marker detected");
 
-  hint.textContent = "Coffre trouvé. Touche le sceau rouge.";
+  hint.textContent = unlocked
+    ? "The hidden menu is open."
+    : "Chest found. Touch the red seal.";
 
   scroll.setAttribute("visible", "true");
-  scroll.setAttribute("scale", "0.01 0.01 0.01");
 
-  requestAnimationFrame(() => {
-    scroll.setAttribute(
-      "animation__appear",
-      "property: scale; from: 0.01 0.01 0.01; to: 0.78 0.78 0.78; dur: 900; easing: easeOutElastic"
-    );
-  });
+  if (!unlocked) {
+    scroll.removeAttribute("animation__appear");
+    scroll.setAttribute("scale", "0.01 0.01 0.01");
+
+    requestAnimationFrame(() => {
+      scroll.setAttribute(
+        "animation__appear",
+        "property: scale; from: 0.01 0.01 0.01; to: 0.78 0.78 0.78; dur: 900; easing: easeOutElastic"
+      );
+    });
+  } else {
+    scroll.removeAttribute("animation__appear");
+    scroll.setAttribute("scale", "1 1 1");
+  }
 });
 
 marker.addEventListener("markerLost", () => {
   console.log("Main marker lost");
 
-  hint.textContent = "Reviens sur la serrure du coffre.";
+  if (unlocked) {
+    hint.textContent =
+      "Point the camera back at the marker to see the menu.";
+    return;
+  }
+
+  hint.textContent = "Point the camera back at the lock.";
 
   scroll.removeAttribute("animation__appear");
   scroll.setAttribute("visible", "false");
   scroll.setAttribute("scale", "0.01 0.01 0.01");
 });
 
-marker.addEventListener("markerLost", () => {
-  hint.textContent = "Reviens sur la serrure du coffre.";
-});
-
-let open = false;
-
 seal.addEventListener("click", () => {
-  open = !open;
+  if (unlocked) {
+    return;
+  }
+
+  unlocked = true;
 
   document.querySelectorAll(".drink-line").forEach((line, index) => {
-    line.setAttribute("visible", open);
+    line.setAttribute("visible", "true");
 
-    if (open) {
-      line.setAttribute(`animation__reveal${index}`, {
-        property: "text.opacity",
-        from: 0,
-        to: 1,
-        delay: index * 140,
-        dur: 650
-      });
-    }
+    line.setAttribute(
+      `animation__reveal${index}`,
+      `property: text.opacity; from: 0; to: 1; delay: ${
+        index * 140
+      }; dur: 650`
+    );
   });
 
-  scroll.setAttribute("animation__open", {
-    property: "scale",
-    to: open ? "1 1 1" : "0.78 0.78 0.78",
-    dur: 650,
-    easing: "easeInOutCubic"
-  });
+  scroll.removeAttribute("animation__appear");
 
-  seal.setAttribute("color", open ? "#b8860b" : "#8b1d1d");
+  scroll.setAttribute(
+    "animation__open",
+    "property: scale; to: 1 1 1; dur: 650; easing: easeInOutCubic"
+  );
 
-  hint.textContent = open
-    ? "La carte des boissons est révélée."
-    : "Touche le sceau pour ouvrir.";
-});
+  seal.setAttribute("color", "#b8860b");
 
-window.addEventListener("load", () => {
-  setTimeout(() => {
-    const video = document.querySelector("#arjs-video, video");
-    const scene = document.querySelector("a-scene");
-
-    const diagnostics = {
-      aframeLoaded: typeof AFRAME !== "undefined",
-      sceneLoaded: scene?.hasLoaded ?? false,
-      videoFound: Boolean(video),
-      videoPaused: video?.paused,
-      videoReadyState: video?.readyState,
-      videoWidth: video?.videoWidth,
-      videoHeight: video?.videoHeight,
-      hasStream: Boolean(video?.srcObject),
-      protocol: location.protocol
-    };
-
-    console.log("AR diagnostics", diagnostics);
-
-    const box = document.createElement("pre");
-    box.style.cssText = `
-      position:fixed;
-      top:8px;
-      left:8px;
-      right:8px;
-      z-index:99999;
-      padding:10px;
-      margin:0;
-      background:rgba(0,0,0,.8);
-      color:white;
-      font:12px monospace;
-      white-space:pre-wrap;
-    `;
-    box.textContent = JSON.stringify(diagnostics, null, 2);
-    document.body.appendChild(box);
-  }, 4000);
+  hint.textContent = "The drinks menu is revealed.";
 });
