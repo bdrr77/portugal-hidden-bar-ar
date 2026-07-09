@@ -68,7 +68,7 @@ async function startCamera() {
     intro.classList.add("hidden");
     hint.classList.remove("hidden");
     hint.textContent =
-      "Vise la serrure dorée du coffre, puis touche le sceau.";
+      "Vise tout le coffre noir et blanc, puis touche le sceau.";
   } catch (error) {
     console.error("Camera startup failed:", error);
 
@@ -90,7 +90,7 @@ let lastMarkerSeenAt = 0;
 
 // Keep the last valid marker pose briefly when tracking flickers.
 // This prevents the letter from flashing off while the lock is still visible.
-const TRACKING_GRACE_MS = 1400;
+const TRACKING_GRACE_MS = 2000;
 
 function copyMarkerPose() {
   if (!marker?.object3D || !contentAnchor?.object3D) {
@@ -115,8 +115,8 @@ function copyMarkerPose() {
     contentAnchor.object3D.visible = false;
 
     hint.textContent = unlocked
-      ? "Reviens vers la serrure pour revoir le menu."
-      : "Vise de nouveau la serrure dorée.";
+      ? "Reviens vers le coffre noir et blanc pour revoir le menu."
+      : "Vise de nouveau tout le coffre noir et blanc.";
   }
 
   requestAnimationFrame(copyMarkerPose);
@@ -133,7 +133,7 @@ marker.addEventListener("markerFound", () => {
 
   hint.textContent = unlocked
     ? "Le menu caché est ouvert."
-    : "Coffre trouvé. Touche le sceau rouge.";
+    : "Coffre détecté. Touche le sceau rouge.";
 
   scroll.setAttribute("visible", "true");
 

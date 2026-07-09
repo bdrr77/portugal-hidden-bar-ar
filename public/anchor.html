@@ -2,240 +2,99 @@
 <html lang="fr">
 <head>
   <meta charset="utf-8" />
-  <meta
-    name="viewport"
-    content="width=device-width,initial-scale=1"
-  />
-
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Ancre AR imprimable</title>
-
   <script src="/config.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-
   <style>
     :root {
       font-family: system-ui, sans-serif;
-      color: #17384d;
-      background: #ece7d8;
+      color: #111;
+      background: #fff;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      background: #ece7d8;
+      background: #fff;
+      color: #111;
     }
 
     main {
-      max-width: 800px;
+      max-width: 820px;
       margin: 0 auto;
       padding: 24px;
       text-align: center;
     }
 
     h1 {
-      margin-bottom: 10px;
+      margin: 0 0 10px;
       font-size: clamp(28px, 5vw, 42px);
     }
 
     p {
-      margin-top: 0;
-      margin-bottom: 24px;
+      margin: 0 0 20px;
       font-size: 18px;
     }
 
-    .anchor {
-      position: relative;
+    .sheet {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 18px;
+      padding: 12px 0 8px;
+    }
+
+    .marker-block {
+      width: 100mm;
+      max-width: 100%;
+    }
+
+    .marker-title {
+      margin-bottom: 10px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .marker-image {
+      display: block;
       width: 100mm;
       height: 100mm;
       max-width: 100%;
-      margin: 20px auto;
-      overflow: hidden;
-      border: 4px solid #17384d;
-      background:
-        radial-gradient(circle at 50% 18%, rgb(255 255 255 / 0.35), transparent 28%),
-        repeating-linear-gradient(
-          45deg,
-          #f4f0df 0 20px,
-          #2467a2 20px 24px,
-          #f4f0df 24px 44px
-        );
-      box-shadow: 0 10px 40px rgb(0 0 0 / 20%);
+      margin: 0 auto;
+      image-rendering: crisp-edges;
+      image-rendering: pixelated;
+      box-shadow: 0 8px 30px rgb(0 0 0 / 0.12);
     }
 
-    .title {
-      position: absolute;
-      top: 12px;
-      left: 15px;
-      right: 15px;
-      z-index: 3;
-      font-family: Georgia, serif;
-      font-size: 22px;
-      font-weight: 700;
-      color: #17384d;
+    .tracking-note {
+      max-width: 560px;
+      font-size: 15px;
+      line-height: 1.45;
     }
 
-    .chest {
-      position: absolute;
-      left: 10%;
-      right: 10%;
-      bottom: 10%;
-      height: 58%;
-      border: 10px solid #3a1c0d;
-      border-radius: 50% 50% 12px 12px;
-      background:
-        linear-gradient(
-          180deg,
-          #b26734 0%,
-          #ab5a2b 35%,
-          #85401f 36%,
-          #7a3519 100%
-        );
-      box-shadow:
-        inset 0 6px 0 rgb(255 236 194 / 0.18),
-        inset 0 -8px 0 rgb(0 0 0 / 0.16);
+    .qr-block {
+      display: inline-flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      padding: 12px;
+      border: 2px solid #111;
     }
-
-    .chest::before,
-    .chest::after {
-      content: "";
-      position: absolute;
-      left: 0;
-      right: 0;
-      height: 14px;
-      background:
-        linear-gradient(180deg, #deb55a, #ad7b20);
-      box-shadow: inset 0 1px 0 rgb(255 250 210 / 0.55);
-    }
-
-    .chest::before {
-      top: 38%;
-    }
-
-    .chest::after {
-      bottom: 12%;
-    }
-
-    .lock {
-      position: absolute;
-      left: 50%;
-      top: 55.5%;
-      z-index: 3;
-      width: 188px;
-      height: 204px;
-      transform: translate(-50%, -50%);
-      pointer-events: none;
-    }
-
-    .lock-hasp {
-      position: absolute;
-      left: 50%;
-      top: -26px;
-      width: 118px;
-      height: 78px;
-      transform: translateX(-50%);
-      border: 14px solid #cfa34a;
-      border-bottom: 0;
-      border-radius: 58px 58px 0 0;
-      background: transparent;
-      box-shadow:
-        inset 0 3px 0 rgb(255 250 220 / 0.5),
-        0 3px 0 rgb(68 39 10 / 0.3);
-    }
-
-    .lock-body {
-      position: absolute;
-      inset: 26px 0 0;
-      border: 8px solid #7a5417;
-      border-radius: 28px;
-      background:
-        linear-gradient(180deg, #f4d78f 0%, #d2a44a 44%, #a97a2b 100%);
-      box-shadow:
-        inset 0 3px 0 rgb(255 252 224 / 0.55),
-        inset 0 -5px 0 rgb(106 70 16 / 0.4),
-        0 10px 20px rgb(0 0 0 / 0.22);
-    }
-
-    .lock-body::before {
-      content: "";
-      position: absolute;
-      left: 14px;
-      right: 14px;
-      top: 16px;
-      height: 6px;
-      border-radius: 999px;
-      background: rgb(255 247 207 / 0.6);
-    }
-
-    .marker-window {
-      position: absolute;
-      left: 50%;
-      top: 52%;
-      width: 132px;
-      height: 132px;
-      padding: 5px;
-      transform: translate(-50%, -50%);
-      border: 6px solid #7a5417;
-      border-radius: 10px;
-      background: #f0db9f;
-      box-shadow:
-        inset 0 2px 0 rgb(255 247 219 / 0.8),
-        0 2px 8px rgb(0 0 0 / 0.18);
-    }
-
-    .marker-window img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: #fff;
-    }
-
-    .rivet {
-      position: absolute;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 35%, #fff7d3, #c89430 65%, #8f631e 100%);
-      box-shadow: 0 1px 2px rgb(0 0 0 / 0.2);
-    }
-
-    .rivet.r1 { top: 18px; left: 18px; }
-    .rivet.r2 { top: 18px; right: 18px; }
-    .rivet.r3 { bottom: 18px; left: 18px; }
-    .rivet.r4 { bottom: 18px; right: 18px; }
 
     #qr {
-      position: absolute;
-      top: 68px;
-      right: 18px;
-      z-index: 4;
-      width: 108px;
-      height: 108px;
-      padding: 6px;
-      border: 4px solid #17384d;
+      width: 120px;
+      height: 120px;
       background: #fff;
     }
 
     #qr img,
     #qr canvas {
       display: block;
-      width: 88px !important;
-      height: 88px !important;
+      width: 120px !important;
+      height: 120px !important;
       margin: 0;
-    }
-
-    .instruction {
-      position: absolute;
-      left: 8px;
-      right: 8px;
-      bottom: 8px;
-      z-index: 3;
-      font-size: 12px;
-      font-weight: 700;
-      color: #17384d;
     }
 
     .actions {
@@ -252,115 +111,73 @@
       cursor: pointer;
     }
 
-    button:hover {
-      background: #245878;
-    }
+    button:hover { background: #245878; }
 
     @media print {
-      @page {
-        size: auto;
-        margin: 0;
-      }
+      @page { size: auto; margin: 10mm; }
 
-      body {
-        background: white;
-      }
+      h1, p, .actions { display: none; }
 
-      h1,
-      p,
-      .actions {
-        display: none;
-      }
+      main { max-width: none; padding: 0; }
 
-      main {
-        padding: 0;
-      }
+      .sheet { gap: 14px; }
 
-      .anchor {
+      .marker-image {
         width: 100mm;
         height: 100mm;
-        margin: 0;
         box-shadow: none;
+      }
+
+      .tracking-note {
+        max-width: 100mm;
+        font-size: 12px;
       }
     }
   </style>
 </head>
-
 <body>
   <main>
-    <h1>Ancre AR — 10 × 10 cm</h1>
+    <h1>Ancre AR — Coffre</h1>
+    <p>Imprime à 100 % sans ajustement automatique.</p>
 
-    <p>
-      Imprime à 100 %, sans ajustement automatique.
-    </p>
-
-    <div class="anchor">
-      <div id="title" class="title">
-        O Cofre Escondido
+    <div class="sheet">
+      <div class="marker-block">
+        <div id="title" class="marker-title">O Cofre Escondido</div>
+        <img class="marker-image" src="/chest-marker.png" alt="Marqueur AR coffre noir et blanc" />
       </div>
 
-      <div class="chest">
-        <div class="lock" aria-label="Serrure AR personnalisée">
-          <div class="lock-hasp"></div>
-          <div class="lock-body">
-            <span class="rivet r1"></span>
-            <span class="rivet r2"></span>
-            <span class="rivet r3"></span>
-            <span class="rivet r4"></span>
-
-            <div class="marker-window">
-              <img src="/lock-marker.png" alt="Marqueur AR personnalisé en forme de cadenas" />
-            </div>
-          </div>
-        </div>
+      <div class="tracking-note">
+        Scanne le QR code pour ouvrir l’expérience, puis vise tout le coffre noir et blanc.
+        Garde le carré entier dans l’image, bien à plat, avec une bonne lumière.
       </div>
 
-      <div id="qr" aria-label="QR code"></div>
-
-      <div class="instruction">
-        Scanne le QR puis vise la serrure dorée.
+      <div class="qr-block">
+        <div id="qr" aria-label="QR code"></div>
+        <div>Ouvrir l’expérience</div>
       </div>
     </div>
 
     <div class="actions">
-      <button type="button" onclick="window.print()">
-        Imprimer
-      </button>
+      <button type="button" onclick="window.print()">Imprimer</button>
     </div>
   </main>
 
   <script>
     const config = window.APP_CONFIG || {};
+    const publicUrl = config.publicUrl || window.location.origin;
+    const targetUrl = `${publicUrl.replace(/\/+$/, "")}/`;
 
-    const publicUrl =
-      config.publicUrl ||
-      window.location.origin;
+    document.querySelector("#title").textContent = config.barName || "O Cofre Escondido";
 
-    const targetUrl =
-      `${publicUrl.replace(/\/+$/, "")}/`;
-
-    const title =
-      document.querySelector("#title");
-
-    title.textContent =
-      config.barName ||
-      "O Cofre Escondido";
-
-    const qrContainer =
-      document.querySelector("#qr");
-
+    const qrContainer = document.querySelector("#qr");
     if (typeof QRCode === "undefined") {
-      qrContainer.textContent =
-        "QR indisponible";
-
-      console.error(
-        "QRCode library failed to load"
-      );
+      qrContainer.textContent = "QR indisponible";
+      console.error("QRCode library failed to load");
     } else {
       new QRCode(qrContainer, {
         text: targetUrl,
-        width: 88,
-        height: 88,
+        width: 120,
+        height: 120,
         colorDark: "#111111",
         colorLight: "#ffffff",
         correctLevel: QRCode.CorrectLevel.H
