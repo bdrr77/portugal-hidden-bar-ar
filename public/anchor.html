@@ -116,27 +116,20 @@
       position: absolute;
       left: 50%;
       top: 56%;
-      width: 88px;
-      height: 88px;
+      width: 104px;
+      height: 104px;
+      padding: 7px;
       transform: translate(-50%, -50%);
-      border: 10px solid #c89a34;
-      background: #000;
+      border: 8px solid #c89a34;
+      background: #c89a34;
     }
 
-    .marker-inner {
-      position: absolute;
-      inset: 12px;
-      display: grid;
-      place-items: center;
+    .marker img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
       background: #fff;
-    }
-
-    .hiro {
-      font-family: Arial, sans-serif;
-      font-size: 42px;
-      line-height: 1;
-      font-weight: 900;
-      color: #000;
     }
 
     #qr {
@@ -233,9 +226,7 @@
 
       <div class="chest">
         <div class="marker">
-          <div class="marker-inner">
-            <div class="hiro">H</div>
-          </div>
+          <img src="/hiro-marker.png" alt="Marqueur AR Hiro" />
         </div>
       </div>
 
