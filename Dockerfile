@@ -1,14 +1,19 @@
 FROM node:24-bookworm-slim
 
 ENV NODE_ENV=production \
-    PORT=8080
+    PORT=8080 \
+    MENU_DATA_FILE=/data/menu.json
 
 WORKDIR /app
 
 COPY package.json server.mjs ./
 COPY public ./public
 
+RUN mkdir -p /data && chown node:node /data
+
 USER node
+
+VOLUME ["/data"]
 
 EXPOSE 8080
 

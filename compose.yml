@@ -5,9 +5,14 @@ services:
     restart: unless-stopped
     ports:
       - "8080:8080"
+    volumes:
+      - hidden-bar-data:/data
     environment:
       PUBLIC_URL: "https://bar.example.com"
       BAR_NAME: "O Cofre Escondido"
+      ADMIN_PASSWORD: "change-this-admin-password"
+      SESSION_SECRET: "change-this-long-random-session-secret"
+      MENU_DATA_FILE: "/data/menu.json"
       DRINKS: >-
         [
           {"name":"Porto Tónico","detail":"Porto branco, tónica, limão"},
@@ -26,3 +31,6 @@ services:
           {"name":"Porto","detail":"Portuguese fortified wine"},
           {"name":"Água com Gás","detail":"Sparkling mineral water"}
         ]
+
+volumes:
+  hidden-bar-data:

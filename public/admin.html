@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <meta name="theme-color" content="#101820" />
+  <title>Bar admin</title>
+  <link rel="stylesheet" href="/admin.css" />
+</head>
+<body>
+  <main class="admin-shell">
+    <section id="login-panel" class="login-panel">
+      <p class="eyebrow">Secure access</p>
+      <h1>Bar admin</h1>
+      <form id="login-form" class="login-form">
+        <label for="password">Password</label>
+        <div class="password-row">
+          <input id="password" name="password" type="password" autocomplete="current-password" required />
+          <button type="submit">Login</button>
+        </div>
+      </form>
+    </section>
+
+    <section id="editor-panel" class="editor-panel hidden">
+      <header class="admin-header">
+        <div>
+          <p class="eyebrow">Drink lists</p>
+          <h1>Bar admin</h1>
+        </div>
+        <button id="logout-button" class="ghost-button" type="button">Logout</button>
+      </header>
+
+      <div class="toolbar">
+        <button class="tab-button active" type="button" data-target="official">Official drinks</button>
+        <button class="tab-button" type="button" data-target="underground">Underground menu</button>
+      </div>
+
+      <form id="menu-form">
+        <section class="menu-editor active" data-section="official">
+          <div class="section-heading">
+            <h2>Official drinks</h2>
+            <button type="button" class="add-button" data-list="officialDrinks">Add drink</button>
+          </div>
+          <div id="official-list" class="drink-editor-list"></div>
+        </section>
+
+        <section class="menu-editor" data-section="underground">
+          <div class="section-heading">
+            <h2>Underground menu</h2>
+            <button type="button" class="add-button" data-list="menu">Add drink</button>
+          </div>
+          <div id="underground-list" class="drink-editor-list"></div>
+        </section>
+
+        <div class="save-bar">
+          <p id="status" role="status"></p>
+          <button id="save-button" type="submit">Save changes</button>
+        </div>
+      </form>
+    </section>
+  </main>
+
+  <template id="drink-row-template">
+    <article class="drink-row">
+      <div class="field-grid">
+        <label>
+          <span>Name</span>
+          <input class="drink-name-input" type="text" maxlength="120" required />
+        </label>
+        <label>
+          <span>Detail</span>
+          <textarea class="drink-detail-input" rows="3" maxlength="400"></textarea>
+        </label>
+      </div>
+      <button class="remove-button" type="button" aria-label="Remove drink">Remove</button>
+    </article>
+  </template>
+
+  <script type="module" src="/admin.js"></script>
+</body>
+</html>

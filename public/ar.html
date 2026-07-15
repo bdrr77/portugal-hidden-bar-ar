@@ -1,0 +1,151 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no" />
+  <meta name="theme-color" content="#102f45" />
+  <title>O Cofre Escondido AR</title>
+  <link rel="stylesheet" href="/ar.css" />
+  <script src="/config.js"></script>
+  <script src="https://aframe.io/releases/1.6.0/aframe.min.js"></script>
+  <script src="https://raw.githack.com/AR-js-org/AR.js/3.4.7/aframe/build/aframe-ar.js"></script>
+</head>
+<body>
+  <div id="intro" class="panel">
+    <div class="card">
+      <div class="crest">☠</div>
+      <h1 id="bar-name">O Cofre Escondido</h1>
+      <p id="intro-copy">Autorise la caméra, puis vise tout le coffre noir et blanc.</p>
+      <button id="start" type="button">Entrer dans le bar caché</button>
+      <a href="/anchor.html" class="secondary">Afficher / imprimer l’ancre</a>
+    </div>
+  </div>
+
+  <div id="hint" class="hint hidden">Vise tout le coffre noir et blanc.</div>
+
+  <a-scene
+    id="scene"
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="antialias: true; alpha: true"
+    arjs="sourceType: webcam; debugUIEnabled: false; detectionMode: mono; patternRatio: 0.5;"
+  >
+    <a-marker
+      id="marker"
+      type="pattern"
+      url="/pattern-chest-v2.patt"
+      emitevents="true"
+      smooth="true"
+      smooth-count="12"
+      smooth-tolerance="0.01"
+      smooth-threshold="5"
+    ></a-marker>
+
+    <a-entity id="content-anchor" visible="false">
+      <a-entity
+        id="choice-card"
+        position="0 0.95 0"
+        rotation="-90 0 0"
+        scale="0.01 0.01 0.01"
+        visible="false"
+      >
+        <a-plane
+          width="3.2"
+          height="2.05"
+          color="#101820"
+          material="side: double; roughness: 0.9; opacity: 0.96"
+          shadow
+        ></a-plane>
+
+        <a-text
+          value="BLUE PILL OR RED PILL?"
+          color="#ffffff"
+          align="center"
+          width="3.05"
+          position="0 .62 .035"
+        ></a-text>
+
+        <a-text
+          value="Choose your path"
+          color="#d7c38a"
+          align="center"
+          width="2.35"
+          position="0 .28 .04"
+        ></a-text>
+
+        <a-entity position="-.78 -.34 .075">
+          <a-circle
+            radius=".36"
+            scale="1.7 .72 1"
+            color="#1976d2"
+            material="roughness: .45; metalness: .08"
+          ></a-circle>
+          <a-text
+            value="BLUE"
+            color="#ffffff"
+            align="center"
+            width="1.25"
+            position="0 -.02 .035"
+          ></a-text>
+          <a-plane
+            id="blue-pill"
+            class="clickable"
+            width="1.45"
+            height=".7"
+            material="opacity: 0.001; transparent: true; depthWrite: false"
+            position="0 0 .07"
+          ></a-plane>
+          <a-text
+            value="OFFICIAL DRINKS"
+            color="#b7d8ff"
+            align="center"
+            width="1.42"
+            position="0 -.56 .035"
+          ></a-text>
+        </a-entity>
+
+        <a-entity position=".78 -.34 .075">
+          <a-circle
+            radius=".36"
+            scale="1.7 .72 1"
+            color="#c62828"
+            material="roughness: .45; metalness: .08"
+          ></a-circle>
+          <a-text
+            value="RED"
+            color="#ffffff"
+            align="center"
+            width="1.25"
+            position="0 -.02 .035"
+          ></a-text>
+          <a-plane
+            id="red-pill"
+            class="clickable"
+            width="1.45"
+            height=".7"
+            material="opacity: 0.001; transparent: true; depthWrite: false"
+            position="0 0 .07"
+          ></a-plane>
+          <a-text
+            value="UNDERGROUND MENU"
+            color="#ffb7b7"
+            align="center"
+            width="1.42"
+            position="0 -.56 .035"
+          ></a-text>
+        </a-entity>
+      </a-entity>
+    </a-entity>
+
+    <a-entity camera>
+      <a-cursor
+        raycaster="objects: .clickable"
+        fuse="false"
+        cursor="rayOrigin: mouse"
+      ></a-cursor>
+    </a-entity>
+  </a-scene>
+
+  <script type="module" src="/ar.js"></script>
+</body>
+</html>

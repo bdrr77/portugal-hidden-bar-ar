@@ -16,9 +16,11 @@ docker compose -f compose.yml up -d
 Open:
 
 - AR experience: `http://localhost:8080`
+- floating AR menu: `http://localhost:8080/ar`
 - printable anchor: `http://localhost:8080/anchor.html`
 - underground menu: `http://localhost:8080/underground-menu.html`
 - official drinks: `http://localhost:8080/official-drinks.html`
+- admin editor: `http://localhost:8080/admin.html`
 
 Camera access normally requires HTTPS. `localhost` is accepted for development, but production must be served behind HTTPS.
 
@@ -28,9 +30,14 @@ Camera access normally requires HTTPS. `localhost` is accepted for development, 
 services:
   hidden-bar-ar:
     image: ghcr.io/YOUR_GITHUB_USER/YOUR_REPOSITORY:latest
+    volumes:
+      - hidden-bar-data:/data
     environment:
       PUBLIC_URL: "https://bar.example.com"
       BAR_NAME: "O Cofre Escondido"
+      ADMIN_PASSWORD: "change-this-admin-password"
+      SESSION_SECRET: "change-this-long-random-session-secret"
+      MENU_DATA_FILE: "/data/menu.json"
       DRINKS: >-
         [
           {"name":"Navegador","detail":"Rum escuro, ananás, canela"},
@@ -41,9 +48,14 @@ services:
           {"name":"Super Bock","detail":"Portuguese lager"},
           {"name":"Vinho Verde","detail":"Fresh Portuguese white wine"}
         ]
+
+volumes:
+  hidden-bar-data:
 ```
 
 `DRINKS` controls the red-pill underground menu. `OFFICIAL_DRINKS` controls the blue-pill public menu. Both variables accept either JSON arrays or pipe-separated drink names.
+
+`ADMIN_PASSWORD` enables `/admin.html`, where you can add, remove, and edit drinks. Changes are saved to `MENU_DATA_FILE`; mount `/data` as a persistent volume so edits survive container recreation. `SESSION_SECRET` signs the admin session cookie, so set it to a long random value and keep the site behind HTTPS.
 
 ## Tracking files
 
